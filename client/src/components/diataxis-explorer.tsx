@@ -21,32 +21,32 @@ interface QuadrantInfo {
 
 const quadrants: QuadrantInfo[] = [
   {
-    title: "Tutorials",
-    description: "Learning-oriented guides that help beginners learn by doing",
+    title: "Tutoriels",
+    description: "Guides d'apprentissage pour aider les débutants à apprendre par la pratique",
     icon: <BookOpen className="h-6 w-6" />,
     color: "bg-blue-100 dark:bg-blue-950",
     hoverColor: "hover:bg-blue-200 dark:hover:bg-blue-900",
     category: "tutorial"
   },
   {
-    title: "How-to Guides",
-    description: "Problem-oriented guides that show how to solve specific problems",
+    title: "Guides pratiques",
+    description: "Guides orientés problèmes qui montrent comment résoudre des problèmes spécifiques",
     icon: <FileText className="h-6 w-6" />,
     color: "bg-green-100 dark:bg-green-950",
     hoverColor: "hover:bg-green-200 dark:hover:bg-green-900",
     category: "howto"
   },
   {
-    title: "Reference",
-    description: "Information-oriented technical descriptions of the product",
+    title: "Référence",
+    description: "Descriptions techniques orientées information du produit",
     icon: <Brain className="h-6 w-6" />,
     color: "bg-purple-100 dark:bg-purple-950",
     hoverColor: "hover:bg-purple-200 dark:hover:bg-purple-900",
     category: "reference"
   },
   {
-    title: "Explanation",
-    description: "Understanding-oriented discussions that explain concepts",
+    title: "Concepts",
+    description: "Discussions orientées compréhension qui expliquent les concepts",
     icon: <Lightbulb className="h-6 w-6" />,
     color: "bg-amber-100 dark:bg-amber-950",
     hoverColor: "hover:bg-amber-200 dark:hover:bg-amber-900",
@@ -63,7 +63,7 @@ export function DiataxisExplorer() {
         <h2 className="col-span-2 text-2xl font-bold mb-2">
           Documentation Explorer
         </h2>
-        
+
         {quadrants.map((quadrant) => (
           <motion.div
             key={quadrant.title}
@@ -87,7 +87,7 @@ export function DiataxisExplorer() {
                   </p>
                   <Link href={`/document/new?category=${quadrant.category}`}>
                     <Badge variant="secondary" className="mt-2">
-                      Create {quadrant.title}
+                      Créer {quadrant.title}
                     </Badge>
                   </Link>
                 </div>
