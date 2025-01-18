@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { DocSearch } from "@/components/doc-search";
 import { DocTree } from "@/components/doc-tree";
+import { ProgressTracker } from "@/components/progress-tracker";
 import { SelectDocument } from "@db/schema";
 
 export default function Home() {
@@ -15,7 +16,10 @@ export default function Home() {
         <DocSearch />
       </div>
 
-      {documents && <DocTree documents={documents} />}
+      <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
+        {documents && <DocTree documents={documents} />}
+        <ProgressTracker />
+      </div>
     </div>
   );
 }
