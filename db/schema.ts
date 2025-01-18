@@ -6,6 +6,8 @@ export const documents = pgTable("documents", {
   title: text("title").notNull(),
   content: text("content").notNull(),
   category: text("category").notNull(), // 'tutorial', 'howto', 'reference', 'explanation'
+  userRole: text("user_role").notNull(), // 'business', 'developer', 'ops'
+  parentId: integer("parent_id"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   order: integer("order").default(0),
@@ -16,6 +18,7 @@ export const templates = pgTable("templates", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   category: text("category").notNull(), // 'tutorial', 'howto', 'reference', 'explanation'
+  userRole: text("user_role").notNull(), // 'business', 'developer', 'ops'
   content: text("content").notNull(),
   isDefault: boolean("is_default").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -38,7 +41,10 @@ export type SelectTemplate = typeof templates.$inferSelect;
 export const relations = {
   documents: {
     template: (documents, templates) => ({
-      references: [{ columns: [documents.templateId], foreignColumns: [templates.id] }],
+      references: [
+        { columns: [documents.templateId], foreignColumns: [templates.id] },
+        { columns: [documents.parentId], foreignColumns: [documents.id] }
+      ],
     }),
   },
 };
