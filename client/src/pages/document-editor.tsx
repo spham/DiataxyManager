@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
@@ -7,17 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { SelectDocument } from "@db/schema";
+import { SelectDocument, SelectTemplate } from "@db/schema";
 
 export default function DocumentEditor() {
   const { id } = useParams();
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("tutorial");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
 
+  // Fetch document if editing
   const { data: document } = useQuery<SelectDocument>({
     queryKey: [`/api/documents/${id}`],
     enabled: !!id,
@@ -25,17 +27,39 @@ export default function DocumentEditor() {
       setTitle(doc.title);
       setContent(doc.content);
       setCategory(doc.category);
+      setSelectedTemplateId(doc.templateId || null);
     }
   });
+
+  // Fetch templates for the selected category
+  const { data: templates } = useQuery<SelectTemplate[]>({
+    queryKey: [`/api/templates/${category}`],
+    enabled: !id, // Only fetch templates when creating a new document
+  });
+
+  // Update content when template is selected
+  useEffect(() => {
+    if (templates && selectedTemplateId) {
+      const template = templates.find(t => t.id === selectedTemplateId);
+      if (template) {
+        setContent(template.content.replace('{title}', title));
+      }
+    }
+  }, [selectedTemplateId, title, templates]);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
       const response = await fetch(id ? `/api/documents/${id}` : '/api/documents', {
         method: id ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content, category })
+        body: JSON.stringify({ 
+          title, 
+          content, 
+          category,
+          templateId: selectedTemplateId
+        })
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to save document');
       }
@@ -76,6 +100,21 @@ export default function DocumentEditor() {
             <SelectItem value="explanation">Explanation</SelectItem>
           </SelectContent>
         </Select>
+
+        {!id && templates && templates.length > 0 && (
+          <Select value={selectedTemplateId?.toString()} onValueChange={(value) => setSelectedTemplateId(parseInt(value))}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a template" />
+            </SelectTrigger>
+            <SelectContent>
+              {templates.map(template => (
+                <SelectItem key={template.id} value={template.id.toString()}>
+                  {template.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
         <Textarea 
           placeholder="Document content..."
