@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DocCard } from "@/components/doc-card";
 import { DocSearch } from "@/components/doc-search";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DiataxisExplorer } from "@/components/diataxis-explorer";
 import { SelectDocument } from "@db/schema";
 
 export default function Home() {
@@ -22,6 +23,9 @@ export default function Home() {
         <h1 className="text-4xl font-bold">Documentation</h1>
         <DocSearch />
       </div>
+
+      {/* Add the Diataxis Explorer */}
+      <DiataxisExplorer />
 
       <Tabs defaultValue="tutorial">
         <TabsList>
