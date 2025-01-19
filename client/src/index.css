@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    @apply border-border;
+  }
+
   body {
-    @apply min-h-screen bg-base-100 text-base-content font-sans antialiased;
+    @apply font-sans antialiased bg-background text-foreground;
   }
 }
